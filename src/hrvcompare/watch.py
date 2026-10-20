@@ -144,7 +144,7 @@ def _fit_vertices(
 
 
 def digitize_hrv_chart(
-    png: str | Path,
+    png: str | Path | Image.Image,
     axis_start_s: float,
     axis_end_s: float,
     interval_min: float = 10.0,
@@ -152,7 +152,8 @@ def digitize_hrv_chart(
     reported_avg: float | None = None,
     normal_range: tuple[float, float] | None = None,
 ) -> WatchHRV:
-    img = np.asarray(Image.open(png).convert("RGB")).astype(int)
+    image = png if isinstance(png, Image.Image) else Image.open(png)
+    img = np.asarray(image.convert("RGB")).astype(int)
     h, w, _ = img.shape
     ys, xs = np.nonzero(_line_mask(img))
     if len(ys) == 0:

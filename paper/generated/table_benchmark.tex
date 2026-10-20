@@ -1,0 +1,23 @@
+\begin{tabular}{lrrrrr}
+\toprule
+Method & 0\% & 5\% & 10\% & 20\% & 30\% \\
+\midrule
+\multicolumn{6}{l}{\textit{Real ground truth, empirical strap noise}} \\
+No cleaning & 148.8 & 272.1 & 333.4 & 473.8 & 514.3 \\
+20\% filter, delete & 0.5 & 11.0 & 21.5 & 44.9 & 62.0 \\
+20\% filter, delete, adjacent pairs only & 0.3 & 2.3 & 7.0 & 14.3 & 20.9 \\
+20\% filter, interpolate & 0.9 & 3.3 & 4.2 & 8.5 & 11.7 \\
+Kubios-type correction (NeuroKit2) & 3.4 & 39.6 & 64.7 & 119.2 & 131.7 \\
+Proposed & 0.4 \textcolor{inksoft}{(100)} & 1.1 \textcolor{inksoft}{(100)} & 1.9 \textcolor{inksoft}{(97)} & 6.8 \textcolor{inksoft}{(20)} & 12.1 \textcolor{inksoft}{(6)} \\
+Proposed, lenient gate & 0.4 \textcolor{inksoft}{(100)} & 1.1 \textcolor{inksoft}{(100)} & 1.8 \textcolor{inksoft}{(100)} & 3.0 \textcolor{inksoft}{(100)} & 5.0 \textcolor{inksoft}{(86)} \\
+\midrule
+\multicolumn{6}{l}{\textit{Synthetic ground truth, parametric noise}} \\
+No cleaning & 176.5 & 342.2 & 433.1 & 561.3 & 649.4 \\
+20\% filter, delete & 0.4 & 13.9 & 30.5 & 67.8 & 95.5 \\
+20\% filter, delete, adjacent pairs only & 0.3 & 3.3 & 5.1 & 17.1 & 28.2 \\
+20\% filter, interpolate & 0.9 & 3.7 & 4.6 & 13.0 & 20.0 \\
+Kubios-type correction (NeuroKit2) & 2.9 & 37.5 & 73.1 & 178.8 & 298.2 \\
+Proposed & 1.2 \textcolor{inksoft}{(91)} & 1.5 \textcolor{inksoft}{(86)} & 1.4 \textcolor{inksoft}{(63)} & 1.9 \textcolor{inksoft}{(5)} & 5.8 \textcolor{inksoft}{(2)} \\
+Proposed, lenient gate & 1.5 \textcolor{inksoft}{(100)} & 1.7 \textcolor{inksoft}{(100)} & 2.0 \textcolor{inksoft}{(99)} & 2.2 \textcolor{inksoft}{(87)} & 2.3 \textcolor{inksoft}{(35)} \\
+\bottomrule
+\end{tabular}

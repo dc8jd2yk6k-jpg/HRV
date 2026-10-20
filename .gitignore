@@ -5,3 +5,15 @@ __pycache__/
 build/
 dist/
 .venv/
+
+# LaTeX intermediates
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.toc

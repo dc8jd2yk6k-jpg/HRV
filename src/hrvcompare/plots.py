@@ -356,3 +356,191 @@ def make_all(res, outdir: Path) -> dict[str, Path]:
         "heart_rate": fig_heart_rate(res, outdir / "06_heart_rate.png"),
         "lag": fig_lag_scan(res, outdir / "07_lag_scan.png"),
     }
+
+
+# ----------------------------------------------------------------------------
+# Manuscript figures
+
+METHOD_STYLE = {  # validated categorical slots; "none" and the lenient variant are context
+    "none": ("No cleaning", MUTED, "-"),
+    "malik_delete": ("20% filter, delete", "#eb6834", "-"),
+    "malik_adjacent": ("20% filter, adjacent pairs", "#1baf7a", "-"),
+    "malik_interp": ("20% filter, interpolate", "#6250d6", "-"),
+    "kubios_nk2": ("Kubios-type (NeuroKit2)", "#e87ba4", "-"),
+    "proposed": ("Proposed", STRAP, "-"),
+    "proposed_lenient": ("Proposed, lenient gate", STRAP_LIGHT, "-"),
+}
+
+
+def fig_benchmark(summary, path: Path, base: str = "real", noise: str = "empirical") -> Path:
+    """Median absolute RMSSD error vs contamination, with window yield."""
+    _style()
+    s = summary[(summary["base"] == base) & (summary["noise"] == noise)]
+    fig, (ax, by) = plt.subplots(1, 2, figsize=(10, 4.2), gridspec_kw={"width_ratios": [2.1, 1], "wspace": 0.35})
+    ends = []
+    for method, (label, color, ls) in METHOD_STYLE.items():
+        d = s[s["method"] == method].sort_values("contamination")
+        x = d["contamination"] * 100
+        y = d["median_abs_error_pct"].clip(lower=0.1)
+        lw = 2.2 if method == "proposed" else 1.4
+        ax.plot(x, y, color=color, lw=lw, ls=ls, zorder=3 if method.startswith("proposed") else 2)
+        _dots(ax, x, y, color, size=24 if method == "proposed" else 16, zorder=4)
+        last = d.dropna(subset=["median_abs_error_pct"]).iloc[-1]
+        ends.append([np.log10(max(last["median_abs_error_pct"], 0.1)), label, last["contamination"] * 100, max(last["median_abs_error_pct"], 0.1)])
+    # Direct labels at the line ends, nudged apart in log space; leader lines keep them attached.
+    ends.sort(key=lambda e: e[0])
+    pos = [e[0] for e in ends]
+    for _ in range(50):
+        for i in range(1, len(pos)):
+            if pos[i] - pos[i - 1] < 0.16:
+                shift = (0.16 - (pos[i] - pos[i - 1])) / 2
+                pos[i - 1] -= shift
+                pos[i] += shift
+    for (y0, label, x0, yv), yl in zip(ends, pos):
+        ax.plot([x0 + 0.4, 33.2], [yv, 10 ** yl], color=GRID, lw=0.8, zorder=1)
+        ax.text(33.6, 10 ** yl, label, color=INK2, fontsize=7.5, va="center")
+    ax.set_yscale("log")
+    ax.set_ylim(0.1, 1500)
+    ax.set_yticks([0.1, 1, 10, 100, 1000])
+    ax.set_yticklabels(["0.1", "1", "10", "100", "1000"])
+    ax.set_xlim(-1, 46)
+    ax.set_xticks([0, 5, 10, 20, 30])
+    ax.set_xlabel("time contaminated by contact noise (%)")
+    ax.set_ylabel("median absolute error of 5-min RMSSD (%)")
+    ax.set_title("A  RMSSD error")
+    ax.grid(axis="x", visible=False)
+    for method in ("proposed", "proposed_lenient"):
+        label, color, _ = METHOD_STYLE[method]
+        d = s[s["method"] == method].sort_values("contamination")
+        by.plot(d["contamination"] * 100, d["yield"] * 100, color=color, lw=2.0 if method == "proposed" else 1.4)
+        _dots(by, d["contamination"] * 100, d["yield"] * 100, color, size=20)
+        by.text(31, float(d["yield"].iloc[-1]) * 100, " " + label.replace("Proposed, ", ""), color=INK2, fontsize=7.5, va="center")
+    by.set_ylim(-3, 105)
+    by.set_xlim(-1, 42)
+    by.set_xticks([0, 5, 10, 20, 30])
+    by.set_xlabel("time contaminated (%)")
+    by.set_ylabel("windows with an estimate (%)")
+    by.set_title("B  Windows retained")
+    by.grid(axis="x", visible=False)
+    return _save(fig, path)
+
+
+def fig_benchmark_grid(summary, path: Path) -> Path:
+    """Supplementary small multiples: ground truth x noise model."""
+    _style()
+    fig, axes = plt.subplots(2, 2, figsize=(10, 7), sharex=True, sharey=True, gridspec_kw={"hspace": 0.3, "wspace": 0.1})
+    for (base, noise), ax in zip([(b, n) for b in ("real", "synthetic") for n in ("empirical", "parametric")], axes.ravel()):
+        s = summary[(summary["base"] == base) & (summary["noise"] == noise)]
+        for method, (label, color, ls) in METHOD_STYLE.items():
+            d = s[s["method"] == method].sort_values("contamination")
+            ax.plot(d["contamination"] * 100, d["median_abs_error_pct"].clip(lower=0.1), color=color,
+                    lw=2.0 if method == "proposed" else 1.2, label=label)
+        ax.set_yscale("log")
+        ax.set_ylim(0.1, 1500)
+        ax.set_title(f"{base} ground truth, {noise} noise", fontsize=9.5)
+        ax.grid(axis="x", visible=False)
+    for ax in axes[1]:
+        ax.set_xlabel("time contaminated (%)")
+    for ax in axes[:, 0]:
+        ax.set_ylabel("median |error| of RMSSD (%)")
+        ax.set_yticks([0.1, 1, 10, 100, 1000])
+        ax.set_yticklabels(["0.1", "1", "10", "100", "1000"])
+    axes[0, 0].legend(loc="upper left", ncol=2, fontsize=7.5)
+    return _save(fig, path)
+
+
+def fig_specification_curve(grid, path: Path, primary: dict, band_halfwidth: float | None = None) -> Path:
+    """Specification curve: every analysis variant's night-level difference,
+    sorted, with an indicator panel showing which choices produced it."""
+    _style()
+    g = grid.dropna(subset=["matched_diff_ms"]).sort_values("matched_diff_ms").reset_index(drop=True)
+    x = np.arange(len(g))
+    is_primary = (
+        (g["hypothesis"] == primary["hypothesis"]) & (g["gate"] == primary["gate"])
+        & (g["convention"] == primary["convention"]) & (g["window_min"] == primary["window_min"])
+    ).to_numpy()
+    fig, (ax, an, ai) = plt.subplots(3, 1, figsize=(10, 6.6), sharex=True, gridspec_kw={"height_ratios": [2.2, 0.7, 2.0], "hspace": 0.12})
+    if band_halfwidth:
+        ax.axhspan(-band_halfwidth, band_halfwidth, color=WASH, lw=0, zorder=0)
+        ax.text(0, band_halfwidth + 0.6, f"±{band_halfwidth:g} ms (half the width of the watch's personal normal range)", color=INK2, fontsize=8)
+    ax.axhline(0, color=AXIS, lw=0.9)
+    _dots(ax, x[~is_primary], g.loc[~is_primary, "matched_diff_ms"], MUTED, size=22)
+    _dots(ax, x[is_primary], g.loc[is_primary, "matched_diff_ms"], STRAP, size=48, zorder=5)
+    ax.set_ylabel("watch − strap,\nnight level (ms)")
+    ax.set_title("Specification curve: every analysis variant of the night-level comparison")
+    ax.grid(axis="x", visible=False)
+    an.bar(x, g["n_valid"], width=0.6, color=np.where(is_primary, STRAP, AXIS))
+    an.set_ylabel("matched\nwindows")
+    an.grid(axis="x", visible=False)
+    rows = [("hypothesis", "H1"), ("hypothesis", "H2"), ("hypothesis", "H3"), ("gate", "strict"), ("gate", "default"),
+            ("gate", "lenient"), ("convention", "ending"), ("convention", "centred"), ("window_min", 10), ("window_min", 5)]
+    labels = ["clock H1", "clock H2", "clock H3", "gate strict", "gate default", "gate lenient", "window ending", "window centred",
+              "10-min window", "5-min window"]
+    for r, (col, val) in enumerate(rows):
+        on = (g[col] == val).to_numpy()
+        ai.scatter(x[on], np.full(on.sum(), r), s=14, color=np.where(is_primary[on], STRAP, INK2), lw=0)
+        ai.scatter(x[~on], np.full((~on).sum(), r), s=6, color=GRID, lw=0)
+    ai.set_yticks(range(len(rows)))
+    ai.set_yticklabels(labels)
+    ai.invert_yaxis()
+    ai.grid(False)
+    ai.set_xlabel("analysis variants, sorted by estimate")
+    ai.set_xticks([])
+    for a in (ax, an, ai):
+        a.spines["bottom"].set_visible(a is ai)
+    return _save(fig, path)
+
+
+def fig_pitfalls(rows, path: Path, band_halfwidth: float | None = None) -> Path:
+    """Apparent watch − strap difference under progressively better analyses."""
+    _style()
+    labels = [r[0] for r in rows]
+    vals = np.array([r[1] for r in rows], dtype=float)
+    kinds = [r[2] for r in rows]
+    fig, ax = plt.subplots(figsize=(10, 0.42 * len(rows) + 1.4))
+    y = np.arange(len(rows))[::-1]
+    ax.set_xscale("symlog", linthresh=10)
+    if band_halfwidth:
+        ax.axvspan(-band_halfwidth, band_halfwidth, color=WASH, lw=0, zorder=0)
+    ax.axvline(0, color=AXIS, lw=0.9)
+    colors = [STRAP if k == "proposed" else (MUTED if k == "naive" else "#eb6834") for k in kinds]
+    handles = [
+        plt.Line2D([], [], marker="o", ls="", color=MUTED, ms=6, label="no or unsuitable artefact handling"),
+        plt.Line2D([], [], marker="o", ls="", color="#eb6834", ms=6, label="simple remedies"),
+        plt.Line2D([], [], marker="o", ls="", color=STRAP, ms=6, label="proposed framework"),
+    ]
+    if band_halfwidth:
+        handles.append(Patch(color=WASH, label=f"±{band_halfwidth:g} ms: half the width of the watch's personal normal range"))
+    ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0, -0.42 if len(rows) < 8 else -0.32), ncol=2, fontsize=8)
+    for yy, v, c in zip(y, vals, colors):
+        ax.plot([0, v], [yy, yy], color=GRID, lw=1.2, zorder=1)
+        _dots(ax, [v], [yy], c, size=40, zorder=4)
+        ax.text(v, yy + 0.28, f"{v:+.1f}".replace("-", "−"), ha="center", va="bottom", fontsize=7.5, color=INK2)
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels)
+    ax.set_ylim(-0.7, len(rows) - 0.3)
+    ax.set_xlim(-400, 40)
+    ax.set_xticks([-300, -100, -30, -10, 0, 10, 30])
+    ax.set_xticklabels(["−300", "−100", "−30", "−10", "0", "10", "30"])
+    ax.set_xlabel("apparent watch − strap difference in nightly RMSSD (ms, symmetric log scale)")
+    ax.set_title("How the analysis of the reference changes the apparent watch error (one night)")
+    ax.grid(axis="y", visible=False)
+    return _save(fig, path)
+
+
+def fig_digitizer(charts, errors, path: Path) -> Path:
+    _style()
+    fig, (ax, bx) = plt.subplots(1, 2, figsize=(10, 3.4), gridspec_kw={"wspace": 0.3})
+    e = np.asarray(errors, dtype=float)
+    ax.hist(np.clip(e, -3, 3), bins=np.arange(-3, 3.01, 0.1), color=STRAP, edgecolor=SURFACE, linewidth=0.5)
+    ax.set_xlabel("error of a recovered reading (ms)")
+    ax.set_ylabel("readings")
+    ax.set_title(f"A  Per reading (n = {len(e):,})")
+    ax.grid(axis="x", visible=False)
+    m = charts["mean_error_ms"].to_numpy()
+    bx.hist(m, bins=np.arange(-4, 4.01, 0.25), color=STRAP, edgecolor=SURFACE, linewidth=0.5)
+    bx.set_xlabel("error of the nightly mean (ms)")
+    bx.set_ylabel("charts")
+    bx.set_title(f"B  Per night (n = {len(m)} charts)")
+    bx.grid(axis="x", visible=False)
+    return _save(fig, path)

@@ -1,0 +1,15 @@
+\begin{tabular}{lrr}
+\toprule
+Analysis of the strap data & Watch $-$ strap (ms) & Strap RMSSD (ms) \\
+\midrule
+No cleaning & \textminus{}250.9 & 298.9 \\
+Kubios-type correction (NeuroKit2) & \textminus{}161.7 & 209.7 \\
+20\% filter, delete & \textminus{}43.7 & 91.7 \\
+20\% filter, delete, adjacent pairs only & \textminus{}20.0 & 68.0 \\
+20\% filter, interpolate & \textminus{}9.3 & 57.3 \\
+Proposed, coverage not matched & \textminus{}9.5 & 57.5 \\
+Proposed, coverage-matched, clock H3 & \textminus{}8.0 & 56.5 \\
+Proposed, coverage-matched, clock H2 & +1.6 & 54.4 \\
+Proposed, coverage-matched, clock H1 & +1.7 & 57.9 \\
+\bottomrule
+\end{tabular}

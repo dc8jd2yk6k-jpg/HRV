@@ -1,0 +1,15 @@
+base,method,windows,yield,median_abs_error_pct,p90_abs_error_pct,median_error_pct
+real,none,7,1,0,0,0
+real,malik_delete,7,1,0,0,0
+real,malik_adjacent,7,1,0,0,0
+real,malik_interp,7,1,0,0,0
+real,kubios_nk2,7,1,0,1.003,0
+real,proposed,7,1,0,1.003,0
+real,proposed_lenient,7,1,0,1.003,0
+synthetic,none,40,1,0,0,0
+synthetic,malik_delete,40,1,0,0,0
+synthetic,malik_adjacent,40,1,0,0,0
+synthetic,malik_interp,40,1,0,0,0
+synthetic,kubios_nk2,40,1,0.3443,2.575,-0.3443
+synthetic,proposed,40,1,1.445,4.536,-1.445
+synthetic,proposed_lenient,40,1,1.445,4.536,-1.445

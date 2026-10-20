@@ -1,0 +1,281 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{amsmath,amssymb}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage[font=small,labelfont={bf,sf},skip=6pt]{caption}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[explicit]{titlesec}
+\usepackage[most]{tcolorbox}
+\usepackage{needspace}
+\usepackage[style=vancouver,backend=biber,sorting=none,autocite=superscript,maxbibnames=6,minbibnames=6,useprefix=true]{biblatex}
+\DeclareDelimFormat{finalnamedelim}{\addcomma\space}
+\addbibresource{references.bib}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{ink}{HTML}{0B0B0B}
+\definecolor{inksoft}{HTML}{52514E}
+\definecolor{rule}{HTML}{C3C2B7}
+\definecolor{wash}{HTML}{F0EFEC}
+\definecolor{link}{HTML}{1C5CAB}
+\definecolor{alert}{HTML}{B5470F}
+\hypersetup{colorlinks=true,linkcolor=link,urlcolor=link,citecolor=link,
+  pdftitle={Pre-submission appraisal: analytic choices in wearable HRV comparisons}}
+
+\input{generated/numbers.tex}
+
+\setstretch{1.12}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlist{nosep,leftmargin=1.4em,topsep=2pt,itemsep=2pt}
+\renewcommand{\arraystretch}{1.2}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\titleformat{\section}{\sffamily\Large\bfseries\color{ink}}{\thesection}{0.6em}{#1}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{ink}}{\thesubsection}{0.6em}{#1}
+\titlespacing*{\section}{0pt}{14pt}{4pt}
+\titlespacing*{\subsection}{0pt}{8pt}{2pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\sffamily\small\color{inksoft}Pre-submission appraisal}
+\fancyhead[R]{\sffamily\small\color{inksoft}\thepage}
+\newtcolorbox{verdict}{enhanced,colback=wash,colframe=rule,boxrule=0.5pt,arc=2pt,
+  left=9pt,right=9pt,top=7pt,bottom=7pt,fonttitle=\sffamily\bfseries,coltitle=ink,colbacktitle=wash,title={Bottom line}}
+
+% One major issue: id, title, why it matters, fix, status.
+\newcommand{\issue}[5]{%
+  \needspace{6\baselineskip}%
+  \subsection*{#1\quad #2}
+  \textit{Why it matters.} #3\par
+  \textit{Fix.} #4\par
+  \textit{Status.} #5\par}
+\newcommand{\cmd}[1]{\texttt{\small #1}}
+\newcommand{\chk}{$\square$\enspace}
+
+\begin{document}
+\thispagestyle{plain}
+
+{\sffamily\bfseries\LARGE Pre-submission appraisal\par}
+\vspace{6pt}
+{\large Analytic choices can rival device error in real-world comparisons of wearable nocturnal heart rate variability: a methods study with benchmark validation and a single-case illustration\par}
+\vspace{6pt}
+{\small\color{inksoft} Prepared for the authors, 20 October 2026. This document reviews the manuscript as an editor and referees would, before submission. Numbers are drawn from the same generated outputs as the manuscript.\par}
+\vspace{8pt}
+
+\begin{verdict}
+\begin{enumerate}[leftmargin=1.3em]
+\item \textbf{Not publishable as a device-validation study in a top-tier medical journal, and rewriting cannot change that.} The evidence is one night of one person, measured against a consumer chest strap rather than a criterion ECG, with the watch's data read from a screenshot.
+\item \textbf{Reframed as a methods paper, the work is honest and useful.} After the external validation in issue M2 it is a reasonable submission to a methods, measurement or digital-health journal.
+\item \textbf{The route to a top-tier journal is a different study:} multi-participant, multi-night and referenced to ECG (Section~7). The framework and code in this manuscript can be its pre-specified analysis.
+\end{enumerate}
+\end{verdict}
+
+\section{Why the original question cannot be answered with these data}
+The original question was whether the watch's HRV and resting heart rate agree with the chest strap. Table~\ref{tab:requirements} sets the requirements of a validation claim against what this dataset provides. Each gap on its own would draw a major revision; together they rule out any claim about the device.
+
+\begin{table}[H]
+\centering\small
+\caption{Requirements of a device-validation claim and what this dataset provides.}
+\label{tab:requirements}
+\begin{tabularx}{\textwidth}{@{}p{0.36\textwidth}Y@{}}
+\toprule
+Requirement & This dataset \\
+\midrule
+Criterion reference with adjudicated beats (ECG) & Consumer chest strap; RR intervals only, no raw ECG; \maskedPct\% of the recording unusable \\
+Several participants and nights & One participant, one night \\
+Wearable output available as data & One app screenshot; \nReadings{} readings recovered by digitisation \\
+Synchronised clocks & \clockDeficitMin{} min of reference time cannot be located \\
+Enough paired observations & \nHOne{} matched 10-min windows (clock H1) \\
+Analysis fixed before seeing the data & Developed on the same night; two components changed during development \\
+Resting heart rate from both devices & Watch value not available; the strap value varied by \rhrSpread{} bpm across definitions \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{What the reconceptualisation changes}
+The manuscript no longer asks whether the watch is accurate. It asks how far analytic choices alone can move an apparent wearable--reference difference, and it answers with evidence that has known ground truth (Table~\ref{tab:reframe}).
+
+\begin{table}[H]
+\centering\small
+\caption{Original framing and reconceptualised manuscript.}
+\label{tab:reframe}
+\begin{tabularx}{\textwidth}{@{}p{0.17\textwidth}YY@{}}
+\toprule
+Aspect & Original framing & Reconceptualised manuscript \\
+\midrule
+Question & Does the watch agree with the strap? & How far can analytic choices alone move an apparent wearable--reference difference, and how should real-world comparisons handle them? \\
+Evidence & One night & Benchmarks with known ground truth (artefact handling; chart digitisation), with the night as a worked illustration \\
+Main result & One difference with limits of agreement & Pitfall decomposition and a specification curve of \nSpecs{} analysis variants \\
+Contribution & An analysis & An open, tested framework and a minimum reporting set (manuscript Table~2) \\
+Device claims & Implied & None \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{What the manuscript may claim, and what it must not}
+\begin{tabularx}{\textwidth}{@{}YY@{}}
+\toprule
+\textbf{Supported by the evidence} & \textbf{Claims to avoid} \\
+\midrule
+\vspace{-6pt}
+\begin{itemize}[leftmargin=1.1em, after=\vspace*{-\baselineskip}]
+\item Under contact noise, deleting filtered beats or applying an ectopy-oriented correction to noise inflates RMSSD error (\benchDeleteTen\% and \benchKubiosTen\% at 10\% contamination).
+\item Masking noise bursts, restricting successive differences to adjacent usable beats and gating windows keep error low on the windows retained, at a steep cost in yield (\benchProposedYieldTwenty\% of windows at 20\% contamination).
+\item Readings can be recovered from this app's charts with a median error of \digValueMedian{}~ms (synthetic charts).
+\item In one night, defensible analyses moved the apparent difference across \pitDefRange{}~ms, more than the watch's \normalWidth-ms normal range, and strap-usable periods were not representative of the night.
+\end{itemize}
+&
+\vspace{-6pt}
+\begin{itemize}[leftmargin=1.1em, after=\vspace*{-\baselineskip}]
+\item Anything about the accuracy, bias or suitability of the watch or the strap.
+\item That the \pitDefRange-ms spread, or the \qualityGap-ms selection gap, generalises to other people, nights or devices.
+\item That the proposed method is superior, without the yield qualifier and before external validation.
+\item Explanations of the selection effect (sleep stage, movement): neither was measured.
+\item Advice to users beyond caution in reading single-night differences.
+\end{itemize}
+\\
+\bottomrule
+\end{tabularx}
+
+\section{Major issues a referee will raise}
+Issues are ordered by how much they threaten the paper. ``Status'' says whether the issue can be resolved before submission.
+
+\issue{M1}{One night from one person}
+{There is no estimate of between-person or between-night variation. The decomposition and the selection gap may be specific to this night.}
+{Keep the night strictly illustrative (done). Add further nights from the same person if they exist, to show whether the decomposition is stable. Better, apply the framework to a public dataset with simultaneous wearable and ECG recordings.}
+{Mitigated by the framing; cannot be removed without new data.}
+
+\issue{M2}{Circularity in the benchmark}
+{The real ground truth (\realMinutes{} min) was selected partly by the proposed method. The empirical noise came from the same night and was cut with a 30\% deviation rule that resembles the method's own safety net. Both may favour the method, and referees will notice.}
+{Highest priority. Run the external validation that is already implemented on the MIT-BIH Arrhythmia Database (expert-annotated ectopy) from PhysioNet,\autocite{goldberger2000,moody2001} and add long clean NN series from the Normal Sinus Rhythm RR Interval Database as a further ground truth (the loader exists; the benchmark arm does not yet). Add ECG-level noise: electrode-motion noise from the MIT-BIH Noise Stress Test Database\autocite{moody1984} added to clean ECG and passed through a standard QRS detector, so that artefacts arise from beat detection rather than from a rule. Report the parametric-noise results alongside.}
+{\ifnum\mitRecords>1 MIT-BIH validation run (\mitRecords{} records); the other two additions remain to do.\else MIT-BIH code ready (\cmd{python paper/build.py -{}-physionet}). It could not run because the computing environment used for this draft could not reach physionet.org.\fi}
+
+\issue{M3}{Comparator fairness and the yield trade-off}
+{The Kubios-type comparator was an open-source implementation applied to all artefacts without separate handling of noisy segments, so it is a weak baseline for contact noise. The 20\%-filter variants are simple. The proposed method wins partly by abstaining: it produced estimates for \benchProposedYieldTwenty\% of windows at 20\% contamination and \benchProposedYieldThirty\% at 30\%. On identical windows its advantage is clear at 5--10\% contamination (\swProposedLowMin--\swProposedLowMax\% against \swInterpLowMin--\swInterpLowMax\% for interpolation) but small at 20\% (\swProposedTwenty\% against \swInterpTwenty\%, from \swNTwenty{} windows).}
+{Give every comparator the same quality gate and show error against yield as the gate varies. Add further published correction algorithms. Tune each method on data other than the illustrative night. Report bootstrap confidence intervals over segments and seeds, with more seeds.}
+{Fixable with the existing code.}
+
+\issue{M4}{The reference is not a criterion measure}
+{A consumer strap's RR intervals come from proprietary on-board beat detection. Without raw ECG, artefacts cannot be adjudicated, and the strap's own artefact flag covered only \deviceCoveragePct\% of what the framework flagged.}
+{State it plainly (done). For new recordings, use a strap that streams raw ECG or an ambulatory ECG recorder, and validate strap RR against ECG in a subset.}
+{Disclosed; cannot be fixed for this night.}
+
+\issue{M5}{Wearable readings recovered from a screenshot}
+{The digitiser was validated on synthetic charts in one visual style, and its precision of \digPrecision\% means some spurious vertices. On the real chart, the only check is against a nightly mean that the app rounds to an integer (\watchReported{}~ms), which cannot detect errors smaller than about 0.5~ms.}
+{Obtain the readings as data: a manufacturer export, an official interface, or a data-access request where data-protection law provides one. Failing that, keep the validation and add a sensitivity analysis that drops low-confidence vertices.}
+{Partly mitigated by the validation.}
+
+\issue{M6}{The clock deficit cannot be resolved}
+{\clockDeficitMin{} min of reference time is unaccounted for. Hypotheses H1--H3 bracket the problem but cannot identify the truth, and the lag scan's peak at \lagBest{}~min is selected on the outcome.}
+{Keep the hypotheses as sensitivity analyses (done). In new recordings, create synchronisation events that both devices register at the start and end of the night, and log each device's clock against a reference clock.}
+{Disclosed; cannot be fixed for this night.}
+
+\issue{M7}{Analytic flexibility and development history}
+{The analysis was developed on the night it illustrates, and two components changed during development: readings were first sampled at fixed intervals and later recovered as polyline vertices, and the interpretation of the clocks was revised. Referees will see a garden of forking paths.}
+{Disclose the development history in the Methods. Freeze and archive the code (a tagged release with a DOI) before analysing any new data. Pre-register future analyses, and keep the specification curve as the primary display.\autocite{steegen2016,simonsohn2020}}
+{Fixable now, by disclosure.}
+
+\issue{M8}{Ethics, consent and data protection}
+{Self-experimentation usually still needs an ethics committee decision or waiver, and journals require consent to publish. The strap export contains a Bluetooth hardware (MAC) address, an app user identifier and body measurements. \textcolor{alert}{That file is currently committed to a public repository.}}
+{Obtain a formal ethics determination before submission. Make the repository private or remove the file from its history. Share only a de-identified RR series, without the MAC address, user identifier, device name or body measurements.}
+{Requires action by the authors.}
+
+\issue{M9}{Use of AI assistance}
+{The code, figures and this draft were produced with an AI system. ICMJE recommends that journals require disclosure of AI-assisted technologies, that chatbots not be listed as authors, and that humans take responsibility for verifying AI-assisted content.\autocite{icmje}}
+{Disclose this as each target journal requires. Re-run the build independently, check the numbers against the outputs, re-verify every reference, and confirm that each author meets the authorship criteria.}
+{Requires action by the authors.}
+
+\section{Minor issues}
+\begin{itemize}
+\item \textbf{Display items.} The main text has two tables and five figures. Many journals cap display items; Figure~3 (tachogram and overnight series) can move to the supplement.
+\item \textbf{Placeholders.} Orange text in the manuscript marks what only the authors can supply: authors and affiliations, participant characteristics, strap and watch models, ethics, repository and DOI, AI disclosure, CRediT roles, funding, competing interests and patient and public involvement.
+\item \textbf{Title.} At 25 words it is long. A shorter option: ``Analytic choices in real-world comparisons of wearable heart rate variability: a methods study''.
+\item \textbf{Terminology.} ``N-of-1'' was replaced with ``single-case illustration'', because N-of-1 usually denotes randomised within-person trials.\autocite{vohra2015}
+\item \textbf{Yardstick.} The watch's personal normal range is a proprietary display band, not an error tolerance. Present it as ``the range users are shown'', and add published between-night variability for context.\autocite{herzig2018}
+\item \textbf{Independence assumption.} The excess per-reading variation of the watch (\watchExcessSD{}~ms) and its shrinkage over a night assume independent errors; say so wherever they are quoted.
+\item \textbf{Word counts} are automated approximations (main text \wordsMain, abstract \wordsAbstract); confirm them with each journal's counting rules.
+\end{itemize}
+
+\section{Where to submit}
+Check each journal's current scope, article types and preprint policy before choosing; the examples below are starting points, not endorsements.
+
+\begin{table}[H]
+\centering\small
+\caption{Venue strategy.}
+\begin{tabularx}{\textwidth}{@{}p{0.2\textwidth}YY@{}}
+\toprule
+Stage & Example venues & What it needs \\
+\midrule
+Now, after M2 and M3 & Methods, measurement and digital-health journals, such as \textit{Physiological Measurement}, \textit{JMIR mHealth and uHealth}, \textit{JMIR Formative Research}, \textit{PLOS Digital Health} or \textit{Frontiers in Physiology} & External validation, fair comparators, the disclosures in M7--M9, and framing as a methods paper with an illustration \\
+Software route & \textit{Journal of Open Source Software} (the package itself); \textit{Behavior Research Methods} (methods and toolboxes) & Documentation, tests and a stable, archived release \\
+After the definitive study & \textit{The Lancet Digital Health}, \textit{npj Digital Medicine}, \textit{European Heart Journal -- Digital Health}; a general medical journal only if the study shows clinically consequential misclassification & The study in Section~7 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Outline of a definitive study}
+A study that could reach a top-tier journal answers a question users and clinicians act on: when a wearable labels a night's HRV as low, how often is that label right? Table~\ref{tab:protocol} sketches the design.
+
+\begin{table}[H]
+\centering\small
+\caption{Outline protocol.}
+\label{tab:protocol}
+\begin{tabularx}{\textwidth}{@{}p{0.2\textwidth}Y@{}}
+\toprule
+Element & Proposal \\
+\midrule
+Objective & Agreement between the wearable's nightly RMSSD, and its low/normal/high night label, and ECG-derived RMSSD over identical sleep periods; and how analytic choices change that agreement \\
+Design & Prospective, pre-registered, home-based method comparison over several nights per participant \\
+Participants & 72 completers (see sample size), about 85 enrolled if 15\% are lost; stratified by sex, age band, body mass index and skin tone (for optical sensors); atrial fibrillation and pacing excluded or studied in a pre-specified subgroup \\
+Criterion & Ambulatory ECG with beat annotations adjudicated blind to the wearable; polysomnography in a subset for sleep staging; the consumer strap as a secondary comparator \\
+Nights & Three to seven per participant \\
+Wearable data & Export or official interface, not screenshots; firmware and app versions recorded; settings fixed \\
+Clocks & Synchronisation events at the start and end of each night; device clocks logged against a reference clock \\
+Primary outcome & Nightly RMSSD difference (wearable minus ECG) on the ratio scale \\
+Secondary outcomes & Agreement of the night label with an ECG-based label from the same personal baseline ($\kappa$, misclassification rate); epoch-level RMSSD if exported; resting heart rate under pre-specified definitions; the specification curve of defensible analyses \\
+Analysis & Pre-registered statistical analysis plan; Bland--Altman limits for repeated measurements on the log scale;\autocite{bland2007} confidence intervals by bootstrap over participants; mixed-effects models for determinants (sleep stage, movement, body mass index, skin tone); pre-specified acceptable limits; reporting per GRRAS and INTERLIVE\autocite{kottner2011,muhlen2021} \\
+Sample size & The standard error of a 95\% limit of agreement is about $\sqrt{3s^2/n}$,\autocite{bland1986} so its confidence interval has half-width $1.96\sqrt{3/n}\,s$: 46 participants give $\pm0.50\,s$ and 72 give $\pm0.40\,s$, where $s$ is the SD of the differences. For a test against pre-specified limits, use the method of Lu et al.\autocite{lu2016} Plan on participants, not nights. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Submission checklist}
+\begin{itemize}[label={}, leftmargin=0.4em]
+\item \chk External validation run and reported (M2): \cmd{python paper/build.py -{}-physionet} re-runs the benchmark with all MIT-BIH records and updates both documents
+\item \chk Comparators given the same gate; error--yield curves and confidence intervals (M3)
+\item \chk Development history disclosed in the Methods (M7)
+\item \chk Placeholders completed, including participant characteristics and device models
+\item \chk Ethics determination and consent to publish (M8)
+\item \chk Repository made private or its history cleaned; de-identified data and code archived with a DOI (M8)
+\item \chk AI-use disclosure in the cover letter and manuscript, as each journal requires (M9)
+\item \chk ICMJE disclosure forms, CRediT roles and funding statement
+\item \chk Reporting checklists: GRRAS; INTERLIVE where applicable; GRAPH for HRV methods\autocite{kottner2011,muhlen2021,quintana2016}
+\item \chk Journal formatting: word and display-item limits, reference style, artwork
+\item \chk Preprint posted only if the target journal's policy allows it
+\item \chk Cover letter that presents a methods paper, names its limitations up front and suggests referees in HRV signal processing, wearable validation and agreement statistics
+\end{itemize}
+
+\section{How this draft was checked}
+\begin{itemize}
+\item \textbf{Generated numbers.} Every number in the manuscript is written by \cmd{paper/build.py} from the analysis code; none is typed by hand.
+\item \textbf{Independent spot-checks.} A separate script that does not use the package recomputed five quantities from the raw export and the benchmark outputs. All agreed: the number of RR intervals (\nRR); the clock deficit (\clockDeficitMin{} min); the uncleaned strap's whole-night RMSSD (298.4 against 298.9~ms, the small gap reflecting window conventions); the benchmark errors and yield (\benchProposedTen\%, \benchKubiosTen\% and \benchProposedYieldTwenty\%); and the digitiser's recall and precision (\digRecall\% and \digPrecision\%).
+\item \textbf{Corrections made before release.} The range of defensible analyses now includes the specification curve (\pitDefMin{} to \pitDefMax{}~ms); ranges quoted in the text were recomputed on exactly the conditions shown in the cited tables; ``N-of-1'' was replaced; the device identifier and body measurements were removed from the text; two unsupported mechanistic statements were softened; and caveats on the Kubios-type comparator and the noise library were added.
+\item \textbf{References.} Each was checked against an indexed record or the publisher's listing, and is formatted in ICMJE style with the first six authors.
+\item \textbf{Software and typesetting.} All 46 software tests pass. The LaTeX build reports no overfull boxes, undefined references or bibliography warnings.
+\item \textbf{Not verified.} \ifnum\mitRecords>1 The participant and device details, and each target journal's current policies.\else The external validation, because PhysioNet was unreachable; the participant and device details; and each target journal's current policies.\fi
+\end{itemize}
+
+\printbibliography[title={References}]
+
+\end{document}

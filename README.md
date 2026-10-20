@@ -14,6 +14,22 @@ plus a COROS watch, and reusable for further nights.
 | Strap resting HR | lowest 5-min mean 45.2 bpm · lowest 30-min mean 46.6 bpm · mean sleeping HR 51.2 bpm |
 | Strap data quality | 37 % of the recording masked as contact noise; 3 % of usable beats corrected |
 
+## Journal manuscript
+
+The work is written up as a methods paper, [`paper/manuscript.pdf`](paper/manuscript.pdf), with a frank pre-submission
+review, [`paper/appraisal.pdf`](paper/appraisal.pdf). In short: one night against a consumer chest strap cannot support a
+device-validation claim in a top-tier journal, so the manuscript asks a methods question instead (how far analytic
+choices alone move an apparent wearable–strap difference) and answers it with benchmarks that have known ground truth.
+
+```bash
+python paper/build.py              # numbers, tables, figures and both PDFs (reuses benchmark outputs)
+python paper/build.py --rerun      # also re-run the artefact-handling benchmark and digitiser validation
+python paper/build.py --physionet  # benchmark with all MIT-BIH records (needs access to physionet.org)
+```
+
+Every number in the manuscript is written by `paper/build.py` to `paper/generated/numbers.tex`; none is typed by hand.
+Orange text in the manuscript marks what only the authors can supply (names, ethics, device models, disclosures).
+
 ## Quick start
 
 ```bash
@@ -89,10 +105,14 @@ src/hrvcompare/
   watch.py                screenshot digitizer (gridline calibration, vertex fit)
   compare.py              matched windows, agreement statistics, sensitivity
   synthetic.py            synthetic RR + artifact injection for validation
+  benchmark.py            artefact-handling benchmark (comparators, time-preserving corruption, MIT-BIH)
+  digitizer_validation.py screenshot digitizer validated on synthetic charts drawn into the real screenshot
   doc.py                  document model rendered to Markdown and LaTeX, PDF build
   pipeline.py, report.py, plots.py, cli.py
 tests/                    pytest suite (synthetic ground truth, NeuroKit2 cross-check, end-to-end)
 reports/                  generated report (PDF, LaTeX source, Markdown), figures, tables
+paper/                    journal manuscript and pre-submission appraisal (LaTeX + PDF), build script, generated outputs
+data/external/            MIT-BIH record 100 sample annotations (from the wfdb-python sample data)
 ```
 
 ## Tests
