@@ -12,6 +12,7 @@ from .artifacts import ArtifactConfig, CleanResult, clean_rr
 from .compare import (
     block_agreement,
     epoch_agreement,
+    hypothesis_table,
     lag_scan,
     matched_table,
     night_level,
@@ -59,6 +60,7 @@ class Results:
     grid: pd.DataFrame
     lags: pd.DataFrame
     window_scan: pd.DataFrame
+    by_hypothesis: pd.DataFrame
     noise: dict
     synthetic: pd.DataFrame
     rhr: dict
@@ -141,6 +143,7 @@ def run(inp: Inputs) -> Results:
         grid=sensitivity_grid(rec, clean, watch),
         lags=lag_scan(rec, clean, watch, hypothesis=inp.hypothesis, gate=gate),
         window_scan=window_length_scan(clean, wall, watch, gate=gate),
+        by_hypothesis=hypothesis_table(rec, clean, watch, inp.window_min * 60, inp.convention, gate),
         noise=watch_noise(matched, len(watch.point_ms)),
         synthetic=validation_table(),
         rhr=rhr,

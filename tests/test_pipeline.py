@@ -1,4 +1,5 @@
 import json
+import shutil
 
 import pytest
 
@@ -22,6 +23,10 @@ def test_report_and_artifacts_written(outdir):
     for fig in ("01_tachogram", "03_rmssd_overnight", "04_agreement", "05_sensitivity", "06_heart_rate"):
         assert (outdir / "figures" / f"{fig}.png").stat().st_size > 10_000
     assert (outdir / "tables" / "matched_windows.csv").exists()
+    tex = (outdir / "report.tex").read_text()
+    assert r"\begin{document}" in tex and "figures/03_rmssd_overnight.pdf" in tex
+    if shutil.which("pdflatex"):
+        assert (outdir / "report.pdf").read_bytes()[:4] == b"%PDF"
 
 
 def test_summary_numbers_are_plausible(outdir):

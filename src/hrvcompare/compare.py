@@ -155,7 +155,7 @@ def lag_scan(
     rec: StrapRecording,
     clean: CleanResult,
     watch: WatchHRV,
-    lags_min=range(-20, 21, 2),
+    lags_min=range(-20, 45, 2),
     hypothesis: str = "H1",
     gate: Gate = GATES["default"],
 ) -> pd.DataFrame:
@@ -218,3 +218,32 @@ def watch_noise(matched: pd.DataFrame, n_readings: int) -> dict:
         "excess_sd_ms": excess,
         "nightly_mean_se_ms": excess / np.sqrt(n_readings),
     }
+
+
+def hypothesis_table(
+    rec: StrapRecording,
+    clean: CleanResult,
+    watch: WatchHRV,
+    length_s: float = 600.0,
+    convention: str = "ending",
+    gate: Gate = GATES["default"],
+) -> pd.DataFrame:
+    """Night-level and epoch-level agreement under each clock hypothesis, for
+    the primary gate / window choice."""
+    rows = []
+    for h in HYPOTHESES:
+        m = matched_table(clean, wall_end_times(rec, clean, h), watch, length_s, convention, gate)
+        nl, a = night_level(m, watch), epoch_agreement(m)
+        rows.append(
+            {
+                "hypothesis": h,
+                "n": nl["n_valid"],
+                "watch_avg": nl["watch_avg_matched"],
+                "strap_avg": nl["strap_avg_valid"],
+                "diff_ms": nl["matched_diff_ms"],
+                "ratio": nl["matched_ratio"],
+                "pearson_r_ln": a.get("pearson_r_ln", np.nan),
+                "mae_ms": a.get("mae_ms", np.nan),
+            }
+        )
+    return pd.DataFrame(rows)

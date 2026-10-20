@@ -26,13 +26,15 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--watch-range", type=float, nargs=2, metavar=("LOW", "HIGH"), help="watch's 'normal range' (ms)")
     r.add_argument("--watch-rhr", type=float, help="watch's resting heart rate for the night (bpm)")
     r.add_argument("--watch-interval", type=float, default=10.0, help="watch HRV measurement interval in minutes (default 10)")
-    r.add_argument("--hypothesis", choices=list(HYPOTHESES), default="H1", help="primary clock-alignment hypothesis")
+    r.add_argument("--hypothesis", choices=list(HYPOTHESES), default="H1",
+                   help="clock hypothesis used for the figures and window-level tables (all three are always reported)")
     r.add_argument("--gate", choices=list(GATES), default="default", help="primary window quality gate")
     r.add_argument("--convention", choices=CONVENTIONS, default="ending", help="strap window relative to each watch reading")
     r.add_argument("--window-min", type=float, default=10.0, help="strap window length behind each watch reading (min)")
     r.add_argument("--rr-min", type=float, default=ArtifactConfig.rr_min_ms, help="shortest plausible RR interval in ms (default for sleep)")
     r.add_argument("--rr-max", type=float, default=ArtifactConfig.rr_max_ms, help="longest plausible RR interval in ms")
     r.add_argument("--out", type=Path, default=Path("reports"), help="output directory")
+    r.add_argument("--no-pdf", action="store_true", help="skip compiling report.tex to PDF")
     return p
 
 
@@ -54,10 +56,11 @@ def main(argv: list[str] | None = None) -> int:
         artifact_config=ArtifactConfig(rr_min_ms=args.rr_min, rr_max_ms=args.rr_max),
     )
     res = run(inputs)
-    report = write_report(res, args.out)
+    paths = write_report(res, args.out, pdf=not args.no_pdf)
     n = res.night
     w = res.watch
-    print(f"report: {report}")
+    for kind, path in paths.items():
+        print(f"{kind}: {path}")
     print(f"strap: {res.clean.summary()['masked_time_frac']:.0%} of recording masked; "
           f"{n['n_valid']}/{n['n_points']} watch readings matched")
     print(f"watch digitized avg {w.digitized_avg:.1f} ms (reported {w.reported_avg}); "

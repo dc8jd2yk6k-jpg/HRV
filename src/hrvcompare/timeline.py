@@ -7,8 +7,9 @@ so the beat clock falls behind the wall clock. Here the header duration
 be recovered from the RR data alone, so each hypothesis is carried through the
 analysis:
 
-H1  strap clock correct; the RR stream simply ends early (the strap lost
-    contact near the end) and the app session ran on empty until stopped.
+H1  the strap's own clock taken as recorded: the RR stream simply ends early
+    and the app session ran on empty until stopped. Needs no assumption about
+    where beats went, so the figures use it for display.
 H2  the missing time is spread uniformly through the night (linear stretch).
 H3  the missing time is hidden inside the masked artifact episodes, in
     proportion to their duration (contact loss is where beats go missing).
@@ -22,7 +23,7 @@ from .artifacts import CleanResult, MASKED
 from .io import StrapRecording
 
 HYPOTHESES = {
-    "H1": "strap clock correct; RR stream ends early, session ran on empty",
+    "H1": "strap clock taken as recorded; the RR stream ended early and the session ran on empty",
     "H2": "missing time spread uniformly (linear stretch)",
     "H3": "missing time inside masked artifact episodes",
 }

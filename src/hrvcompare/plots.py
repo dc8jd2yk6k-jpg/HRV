@@ -65,6 +65,7 @@ def _style() -> None:
             "legend.fontsize": 8.5,
             "lines.solid_capstyle": "round",
             "lines.solid_joinstyle": "round",
+            "pdf.fonttype": 3,
         }
     )
 
@@ -101,7 +102,9 @@ def _masked_spans(beats, wall, merge_gap_s: float = 10.0) -> list[tuple[float, f
 
 
 def _save(fig, path: Path) -> Path:
+    """PNG for the Markdown report, vector PDF for the LaTeX one."""
     fig.savefig(path, dpi=DPI, bbox_inches="tight")
+    fig.savefig(path.with_suffix(".pdf"), dpi=DPI, bbox_inches="tight")
     plt.close(fig)
     return path
 
@@ -179,7 +182,8 @@ def fig_quality(res, path: Path) -> Path:
     ax.bar(x, m["coverage"] * 100, width=width, color=colors, align="center")
     ax.axhline(gate.min_coverage * 100, color=INK2, lw=0.8)
     ax.text(x.min() - width, gate.min_coverage * 100 + 3, f"gate: ≥{gate.min_coverage:.0%} usable time and ≤{gate.max_corrected:.0%} corrected beats",
-            color=INK2, fontsize=8.5, ha="left")
+            color=INK2, fontsize=8.5, ha="left", zorder=5,
+            bbox={"facecolor": SURFACE, "edgecolor": "none", "alpha": 0.9, "pad": 1.5})
     end = _hours(res.wall[-1])
     ax.axvline(end, color=MUTED, lw=0.8)
     ax.text(end + 0.03, 102, "strap stream ends", color=INK2, fontsize=8.5, va="bottom")
@@ -329,14 +333,14 @@ def fig_heart_rate(res, path: Path) -> Path:
 def fig_lag_scan(res, path: Path) -> Path:
     _style()
     lg = res.lags
-    fig, ax = plt.subplots(figsize=(6.5, 3.2))
+    fig, ax = plt.subplots(figsize=(7.5, 3.2))
     ax.axvline(0, color=AXIS, lw=0.9)
     ax.plot(lg["lag_min"], lg["pearson_r_ln"], color=STRAP, lw=1.4)
     _dots(ax, lg["lag_min"], lg["pearson_r_ln"], STRAP, size=22)
     ax.set_ylim(-0.1, 1.0)
     ax.set_xlabel("strap timeline shifted by (min)")
     ax.set_ylabel("Pearson r, ln RMSSD")
-    ax.set_title("Lag scan: no sharp optimum, so no offset is fitted")
+    ax.set_title("Lag scan: agreement vs a shift of the strap timeline (diagnostic only)")
     ax.grid(axis="x", visible=False)
     return _save(fig, path)
 
