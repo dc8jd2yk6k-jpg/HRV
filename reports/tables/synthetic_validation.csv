@@ -1,0 +1,4 @@
+seed,n_ectopic,detected_ectopic,n_missed,detected_missed,n_extra,detected_extra,n_burst,detected_burst,burst_masked_frac,rmssd_true,rmssd_uncleaned,rmssd_cleaned,false_flag_frac_clean_series
+0,22,1,22,1,16,1,3,1,1,39.53,172.3,38.79,0.024
+1,22,1,17,1,21,1,3,1,1,39.58,165.9,38.93,0.01867
+2,20,1,12,1,28,1,3,1,1,40.09,156.4,39.21,0.02767

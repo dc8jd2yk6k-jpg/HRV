@@ -1,0 +1,2 @@
+n_raw_intervals,n_clean_intervals,total_time_s,n_ok,n_corrected,n_masked,masked_time_s,masked_time_frac,corrected_frac_of_valid,raw_flagged_ectopic,raw_flagged_missed,raw_flagged_extra,raw_flagged_longshort,raw_flagged_out_of_range,raw_flagged_deviant,corrected_ectopic,corrected_missed,corrected_extra,corrected_longshort,corrected_out_of_range,corrected_deviant,masked_burst,masked_deviant,masked_residual
+23816,23744,2.393e+04,12859,401,10484,8821,0.3686,0.03024,1179,204,657,4312,70,334,216,10,74,101,0,0,10320,1,163

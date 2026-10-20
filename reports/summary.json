@@ -1,0 +1,142 @@
+{
+  "date": "2026-04-17",
+  "primary_analysis": {
+    "hypothesis": "H1",
+    "gate": "default",
+    "convention": "ending",
+    "window_min": 10.0
+  },
+  "recording": {
+    "start": "2026-04-17T02:19:50",
+    "session_duration_s": 26463.0,
+    "rr_total_s": 23930.877,
+    "clock_deficit_s": 2532.1229999999996,
+    "n_intervals": 23816
+  },
+  "cleaning": {
+    "n_raw_intervals": 23816,
+    "n_clean_intervals": 23744,
+    "total_time_s": 23930.877,
+    "n_ok": 12859,
+    "n_corrected": 401,
+    "n_masked": 10484,
+    "masked_time_s": 8820.9445,
+    "masked_time_frac": 0.3686009710383786,
+    "corrected_frac_of_valid": 0.03024132730015083,
+    "raw_flagged_ectopic": 1179,
+    "raw_flagged_missed": 204,
+    "raw_flagged_extra": 657,
+    "raw_flagged_longshort": 4312,
+    "raw_flagged_out_of_range": 70,
+    "raw_flagged_deviant": 334,
+    "corrected_ectopic": 216,
+    "corrected_missed": 10,
+    "corrected_extra": 74,
+    "corrected_longshort": 101,
+    "corrected_out_of_range": 0,
+    "corrected_deviant": 0,
+    "masked_burst": 10320,
+    "masked_deviant": 1,
+    "masked_residual": 163
+  },
+  "device_flags": {
+    "device_flagged": 894,
+    "ours_flagged_or_masked": 10791,
+    "device_flags_we_also_flag": 0.9854586129753915,
+    "our_flags_device_also_flags": 0.08164210916504494
+  },
+  "watch": {
+    "reported_avg": 48.0,
+    "digitized_avg": 47.976170600278984,
+    "n_readings": 42,
+    "calibration": {
+      "rows": [
+        408.0,
+        484.0,
+        560.0,
+        635.5
+      ],
+      "values": [
+        150.0,
+        100.0,
+        50.0,
+        0.0
+      ],
+      "px_per_ms": 1.5169999999999977,
+      "zero_row": 635.65,
+      "source": "detected",
+      "x_left": 19.0,
+      "x_right": 422.0,
+      "rmse_px": 0.6047462899797891,
+      "max_err_px": 3.2232183896067,
+      "n_points": 42.0,
+      "spacing_median_min": 10.089330024813838,
+      "n_gaps_over_1_5x": 2.0
+    }
+  },
+  "night_level": {
+    "watch_reported_avg": 48.0,
+    "watch_digitized_avg_all": 47.976170600278984,
+    "n_points": 42,
+    "n_valid": 11,
+    "strap_avg_valid": 57.8770412630399,
+    "watch_avg_matched": 59.52967780639301,
+    "matched_diff_ms": 1.6526365433531112,
+    "matched_ratio": 1.0285542679322912,
+    "reported_vs_strap_diff_ms": -9.8770412630399
+  },
+  "epoch_level": {
+    "n": 11,
+    "strap_mean": 57.8770412630399,
+    "watch_mean": 59.52967780639301,
+    "bias_ms": 1.6526365433531138,
+    "mae_ms": 10.453841919994884,
+    "mape_pct": 17.55283790953466,
+    "ratio": 1.0106270289619723,
+    "loa_low_ms": -24.86394488316726,
+    "loa_high_ms": 28.16921796987349,
+    "ratio_loa_low": 0.6388661451883553,
+    "ratio_loa_high": 1.5987182907733766,
+    "ccc": 0.3882898408002686,
+    "ccc_ln": 0.4024739444013083,
+    "pearson_r_ln": 0.44491004531210887,
+    "pearson_p": 0.17031776590887385,
+    "pearson_ci_low": -0.21138036167699312,
+    "pearson_ci_high": 0.8246846316302998,
+    "spearman_rho": 0.29090909090909095
+  },
+  "watch_noise": {
+    "sd_watch_ms": 14.893488570949906,
+    "sd_strap_ms": 8.905156090490095,
+    "excess_sd_ms": 11.937931010733084,
+    "nightly_mean_se_ms": 1.8420627465724566
+  },
+  "strap_overnight": {
+    "window": "5 min",
+    "n_windows": 77,
+    "n_valid": 21,
+    "mean_mean_nn": 1221.89513192245,
+    "mean_sdnn": 57.309540458534144,
+    "mean_rmssd": 57.531140511078135,
+    "mean_pnn50": 40.663854037327084,
+    "mean_hr": 49.23641681933208,
+    "mean_lf": 1004.6848716570516,
+    "mean_hf": 1480.60296149809,
+    "mean_lf_hf": 0.6601156004163803,
+    "pooled_rmssd": 64.65832944309939,
+    "pooled_sdnn": 138.16823729839612,
+    "valid_nn_time_frac": 0.6415035885950727,
+    "covered_until_s": 32320.877
+  },
+  "resting_hr": {
+    "lowest_5min_mean_hr": 45.228581118594406,
+    "lowest_5min_at_s": 28560.0,
+    "lowest_30min_mean_hr": 46.578765577448756,
+    "lowest_30min_at_s": 31500.0,
+    "mean_sleep_hr": 51.195365967012805,
+    "p5_1min_hr": 45.463894261835975,
+    "lowest_1min_hr": 44.2626249077862,
+    "minutes_valid": 174,
+    "minutes_total": 389
+  }
+}
